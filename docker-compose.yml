@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  backend:
+    image: task-manager-backend
+    container_name: task-backend
+    env_file:
+      - ./backend/.env.prod
+    ports:
+      - "4000:4000"
+    restart: always
+
+  frontend:
+    image: task-manager-frontend
+    container_name: task-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    restart: always
