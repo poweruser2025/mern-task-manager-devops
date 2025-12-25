@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         SERVICE_NAME = "taskManager-frontend"
-        IMAGE_NAME = "your-docker-username/taskManager-frontend:latest"
+        IMAGE_NAME = "manasacloud001/taskmanager-frontend:latest"
     }
 
     stages {
