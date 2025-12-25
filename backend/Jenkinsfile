@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         SERVICE_NAME = "taskManager-backend"
-        IMAGE_NAME = "manasacloud001/taskManager-backend:latest"
+        IMAGE_NAME = "manasacloud001/taskmanager-backend:latest"
     }
 
     stages {
