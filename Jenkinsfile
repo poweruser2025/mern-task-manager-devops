@@ -11,10 +11,12 @@ pipeline {
     stages {
 
         stage('Checkout Code') {
-            steps {
-                git 'https://github.com/poweruser2025/mern-task-manager-devops.git'
-            }
-        }
+    steps {
+        git branch: 'main',
+            url: 'https://github.com/poweruser2025/mern-task-manager-devops.git'
+    }
+}
+
 
         stage('Configure AWS + Login ECR') {
             steps {
