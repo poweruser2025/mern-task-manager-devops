@@ -16,32 +16,46 @@ pipeline {
             }
         }
 
-        stage('Login to ECR') {
+        stage('Configure AWS + Login ECR') {
             steps {
-                sh '''
-                aws ecr get-login-password --region $AWS_REGION \
-                | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.$AWS_REGION.amazonaws.com
-                '''
+                withCredentials([usernamePassword(
+                    credentialsId: 'aws-jenkins',
+                    usernameVariable: 'AWS_ACCESS_KEY_ID',
+                    passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                )]) {
+                    sh '''
+                    aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+                    aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+                    aws configure set default.region $AWS_REGION
+
+                    aws sts get-caller-identity
+
+                    aws ecr get-login-password --region $AWS_REGION \
+                      | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.$AWS_REGION.amazonaws.com
+                    '''
+                }
             }
         }
 
         stage('Build Frontend Image') {
             steps {
-                sh '''
-                cd frontend
-                docker build -t task-frontend:v1 .
-                docker tag task-frontend:v1 $ECR_FRONT:v1
-                '''
+                dir('frontend') {
+                    sh '''
+                    docker build -t task-frontend:v1 .
+                    docker tag task-frontend:v1 $ECR_FRONT:v1
+                    '''
+                }
             }
         }
 
         stage('Build Backend Image') {
             steps {
-                sh '''
-                cd backend
-                docker build -t task-backend:v1 .
-                docker tag task-backend:v1 $ECR_BACK:v1
-                '''
+                dir('backend') {
+                    sh '''
+                    docker build -t task-backend:v1 .
+                    docker tag task-backend:v1 $ECR_BACK:v1
+                    '''
+                }
             }
         }
 
