@@ -43,7 +43,9 @@ pipeline {
             steps {
                 dir('frontend') {
                     sh '''
-                    docker build -t task-frontend:v1 .
+                     docker build \
+              --build-arg VITE_API_URL=http://backend:4000 \
+              -t task-frontend:v1 .
                     docker tag task-frontend:v1 $ECR_FRONT:v1
                     '''
                 }
